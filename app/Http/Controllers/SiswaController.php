@@ -14,4 +14,5 @@ class SiswaController extends Controller
     {
         return view('siswa.nilai'); // Halaman daftar nilai
     }
+    
 }

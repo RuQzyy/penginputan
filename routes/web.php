@@ -5,6 +5,7 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserImportController;
 
 Route::get('/', function () {
     return view('auth.login'); // Tambahkan route untuk halaman utama
@@ -40,8 +41,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/admin/nilai', [AdminController::class, 'nilai'])->name('admin.nilai');
         Route::get('/admin/pengumuman', [AdminController::class, 'pengumuman'])->name('admin.pengumuman');
         Route::get('/admin/pengguna', [AdminController::class, 'pengguna'])->name('admin.pengguna');
-        
-        
+        Route::get('/admin/import', [UserImportController::class, 'show'])->name('admin.import');
+        Route::post('/admin/import', [UserImportController::class, 'import'])->name('admin.import.process');   
     });
 
     

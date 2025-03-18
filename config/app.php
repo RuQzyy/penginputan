@@ -2,6 +2,13 @@
 
 return [
 
+// 'providers' => [
+//     Illuminate\Cache\CacheServiceProvider::class,
+// ],
+
+
+
+
     /*
     |--------------------------------------------------------------------------
     | Application Name
