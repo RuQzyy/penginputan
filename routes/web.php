@@ -25,14 +25,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Routes untuk Siswa
     Route::middleware('siswa')->group(function () {
         Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa.index');
+        Route::get('/siswa/nilai', [SiswaController::class, 'nilai'])->name('siswa.nilai');
     });
 
     // Routes untuk Guru
     Route::middleware('guru')->group(function () {
         Route::get('/guru', [GuruController::class, 'index'])->name('guru.index');
+        Route::get('/guru/input', [GuruController::class, 'input'])->name('guru.input');
+        Route::get('/guru/nilai', [GuruController::class, 'nilai'])->name('guru.nilai');
     });
     Route::middleware('admin')->group(function () {
         Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+        Route::get('/admin/kelas', [AdminController::class, 'kelas'])->name('admin.kelas');
+        Route::get('/admin/nilai', [AdminController::class, 'nilai'])->name('admin.nilai');
+        Route::get('/admin/pengumuman', [AdminController::class, 'pengumuman'])->name('admin.pengumuman');
+        Route::get('/admin/pengguna', [AdminController::class, 'pengguna'])->name('admin.pengguna');
+        
+        
     });
 
     

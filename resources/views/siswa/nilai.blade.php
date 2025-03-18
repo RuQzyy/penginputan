@@ -37,21 +37,28 @@
             </div>
         </div>
         <nav class="mt-4">
-            <ul>
-                <li class="p-2 hover:bg-gray-700 cursor-pointer">
-                    <i class="fas fa-tachometer-alt mr-2"></i>
-                    Dashboard
-                </li>
-                <li class="p-2 hover:bg-gray-700 cursor-pointer">
-                    <i class="fas fa-book mr-2"></i>
-                    Nilai Siswa
-                </li>
-                <li class="p-2 hover:bg-gray-700 cursor-pointer">
-                    <i class="fas fa-sign-out-alt mr-2"></i>
-                    Logout
-                </li>
-            </ul>
-        </nav>
+    <ul>
+        <li class="p-2 hover:bg-gray-700 cursor-pointer">
+            <a href="{{ route('siswa.index') }}" class="flex items-center">
+                <i class="fas fa-tachometer-alt mr-2"></i>
+                Dashboard
+            </a>
+        </li>
+        <li class="p-2 hover:bg-gray-700 cursor-pointer">
+            <a href="{{ route('siswa.nilai') }}" class="flex items-center">
+                <i class="fas fa-list mr-2"></i>
+                Daftar Nilai
+            </a>
+        </li>
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button class="p-2 hover:bg-gray-700 cursor-pointer flex items-center w-full text-left" type="submit">
+                <i class="fas fa-sign-out-alt mr-2"></i>
+                Logout
+            </button>
+        </form>
+    </ul>
+</nav>
     </div>
     <!-- Main Content -->
     <div class="flex-1 p-6">
