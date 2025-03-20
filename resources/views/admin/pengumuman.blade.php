@@ -1,178 +1,194 @@
+<!DOCTYPE html>
 <html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>
-   Mengelola Pengumuman
-  </title>
-  <script src="https://cdn.tailwindcss.com">
-  </script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
-  <style>
-   body {
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Mengelola Pengumuman</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <style>
+        body {
             font-family: 'Roboto', sans-serif;
         }
-  </style>
-  <script>
-   function addAnnouncement() {
-            // Logic to add a new announcement
-            alert('Tambah Pengumuman');
+    </style>
+    <script>
+        function addAnnouncement() {
+            document.getElementById('createAnnouncementModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('createAnnouncementModal').classList.add('hidden');
         }
 
         function editAnnouncement(announcementId) {
-            // Logic to edit an announcement
-            alert('Edit Pengumuman: ' + announcementId);
+            // Mengambil data pengumuman dari server
+            fetch(`/admin/pengumuman/${announcementId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Mengisi data ke dalam form
+                    document.getElementById('editTitle').value = data.title;
+                    document.getElementById('editContent').value = data.content;
+
+                    // Set action form untuk mengupdate pengumuman
+                    document.getElementById('editAnnouncementForm').action = `/admin/pengumuman/${announcementId}`;
+
+                    // Tampilkan modal
+                    document.getElementById('editAnnouncementModal').classList.remove('hidden');
+                })
+                .catch(error => console.error('Error fetching announcement:', error));
         }
 
-        function deleteAnnouncement(announcementId) {
-            // Logic to delete an announcement
-            alert('Hapus Pengumuman: ' + announcementId);
+        function closeEditModal() {
+            document.getElementById('editAnnouncementModal').classList.add('hidden');
         }
-  </script>
- </head>
- <body class="bg-gray-100">
-  <div class="flex">
-   <!-- Sidebar -->
-   <div class="w-64 bg-gray-900 text-white min-h-screen fixed">
-    <div class="p-4 flex items-center">
-     <div class="text-2xl font-bold">
-      Sekolah
-     </div>
-     <div class="ml-2 text-sm">
-      Dashboard Admin
-     </div>
+    </script>
+</head>
+<body class="bg-gray-100">
+    <div class="flex">
+  <!-- Sidebar -->
+  <div class="w-64 bg-gray-900 text-white min-h-screen fixed">
+            <div class="p-4 flex items-center">
+                <div class="text-2xl font-bold">Sekolah</div>
+            </div>
+            <div class="p-4 flex items-center bg-gray-800 rounded-lg mb-4">
+                <img src="{{ asset('img/gaga.jpg') }}" class="rounded-full w-14 h-14 border-2 border-white" alt="User  profile picture">
+                <div class="ml-3">
+                    <div class="text-lg font-semibold">{{ auth()->user()->name }}</div>
+                    <div class="text-sm">Admin</div>
+                </div>
+            </div>
+            <nav class="mt-4">
+                <ul>
+                    <li class="p-2 hover:bg-gray-700 cursor-pointer">
+                        <a href="{{ route('admin.index') }}" class="flex items-center">
+                            <i class="fas fa-list mr-2"></i> dashboard
+                        </a>
+                    </li>
+                    <li class="p-2 hover:bg-gray-700 cursor-pointer">
+                        <a href="{{ route('admin.pengguna') }}" class="flex items-center">
+                            <i class="fas fa-users mr-2"></i> data pengguna
+                        </a>
+                    </li>
+                    <li class="p-2 hover:bg-gray-700 cursor-pointer">
+                        <a href="{{ route('admin.kelas') }}" class="flex items-center">
+                            <i class="fas fa-chalkboard-teacher mr-2"></i> kelas dan mata pelajaran
+                        </a>
+                    </li>
+                    <li class="p-2 hover:bg-gray-700 cursor-pointer">
+                        <a href="{{ route('admin.nilai') }}" class="flex items-center">
+                            <i class="fas fa-graduation-cap mr-2"></i> nilai siswa
+                        </a>
+                    </li>
+                    <li class="p-2 hover:bg-gray-700 cursor-pointer">
+                        <a href="{{ route('admin.pengumuman') }}" class="flex items-center">
+                            <i class="fas fa-bullhorn mr-2"></i> pengumuman
+                        </a>
+                    </li>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button class="p-2 hover:bg-gray-700 cursor-pointer flex items-center w-full text-left" type="submit">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                        </button>
+                    </form>
+                </ul>
+            </nav>
+        </div>
+        <!-- Main Content -->
+        <div class="flex-1 p-6 ml-64">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold">Mengelola Pengumuman</h1>
+                <button class="bg-blue-500 text-white p-2 rounded-lg shadow hover:bg-blue-600 transition duration-200" onclick="addAnnouncement()">
+                    Tambah Pengumuman
+                </button>
+            </div>
+
+            <!-- Daftar Pengumuman Section -->
+            <div class="bg-white rounded shadow p-4 mb-6">
+                <div class="flex items-center mb-4">
+                    <div class="bg-red-500 text-white p-2 rounded mr-2">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <h2 class="text-xl font-bold">Daftar Pengumuman</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="p-2">Judul Pengumuman</th>
+                                <th class="p-2">Isi Pengumuman</th>
+                                <th class="p-2">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($pengumuman as $item)
+                            <tr class="border-b">
+                                <td class="p-2">{{ $item->title }}</td>
+                                <td class="p-2">{{ $item->content }}</td>
+                                <td class="p-2 flex space-x-2">
+                                    <button class="bg-green-500 text-white p-1 rounded-lg shadow hover:bg-green-600 transition duration-200" onclick="editAnnouncement('{{ $item->id }}')">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <form action="{{ route('admin.pengumuman.destroy', $item->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="bg-red-500 text-white p-1 rounded-lg shadow hover:bg-red-600 transition duration-200">
+                                            <i class="fas fa-trash"></i> Hapus
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="p-4 flex items-center">
-     <img alt="User profile picture" class="rounded-full w-10 h-10" height="40" src="https://storage.googleapis.com/a1aa/image/Eo3ut0zSaoevlYE1kFjwIhrvJslHtKL_T-XyBalo7OU.jpg" width="40"/>
-     <div class="ml-2">
-      <div class="text-sm">
-       Nama Admin
-      </div>
-     </div>
+
+    <!-- Modal untuk Tambah Pengumuman -->
+    <div id="createAnnouncementModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
+            <h2 class="text-xl font-bold mb-4">Tambah Pengumuman</h2>
+            <form action="{{ route('admin.pengumuman.store') }}" method="POST">
+                @csrf
+                <div class="mb-4">
+                    <label for="title" class="block text-sm font-medium text-gray-700">Judul Pengumuman</label>
+                    <input type="text" name="title" id="title" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                </div>
+                <div class="mb-4">
+                    <label for="content" class="block text-sm font-medium text-gray-700">Isi Pengumuman</label>
+                    <textarea name="content" id="content" rows="4" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"></textarea>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" class="bg-gray-300 text-gray-700 p-2 rounded-lg mr-2" onclick="closeModal()">Batal</button>
+                    <button type="submit" class="bg-blue-500 text-white p-2 rounded-lg">Simpan</button>
+                </div>
+            </form>
+        </div>
     </div>
-    <nav class="mt-4">
-        <ul>
-        <li class="p-2 hover:bg-gray-700 cursor-pointer">
-               <a href="{{ route('admin.index') }}" class="flex items-center">
-                   <i class="fas fa-list mr-2"></i>
-                   dashboard
-               </a>
-           </li>
-           <li class="p-2 hover:bg-gray-700 cursor-pointer">
-               <a href="{{ route('admin.pengguna') }}" class="flex items-center">
-                   <i class="fas fa-list mr-2"></i>
-                   data pengguna
-               </a>
-           </li>
-           <li class="p-2 hover:bg-gray-700 cursor-pointer">
-               <a href="{{ route('admin.kelas') }}" class="flex items-center">
-                   <i class="fas fa-list mr-2"></i>
-                   kelas dan mata pelajaran
-               </a>
-           </li>
-           <li class="p-2 hover:bg-gray-700 cursor-pointer">
-               <a href="{{ route('admin.nilai') }}" class="flex items-center">
-                   <i class="fas fa-list mr-2"></i>
-                   nilai siswa
-               </a>
-           </li>
-           <li class="p-2 hover:bg-gray-700 cursor-pointer">
-               <a href="{{ route('admin.pengumuman') }}" class="flex items-center">
-                   <i class="fas fa-list mr-2"></i>
-                   pengumuman
-               </a>
-           </li>
-         <form action="{{ route('logout') }}" method="POST">
-          @csrf
-          <button class="p-2 hover:bg-gray-700 cursor-pointer flex items-center w-full text-left" type="submit">
-           <i class="fas fa-sign-out-alt mr-2">
-           </i>
-           Logout
-          </button>
-         </form>
-        </ul>
-       </nav>
-   </div>
-   <!-- Main Content -->
-   <div class="flex-1 p-6 ml-64">
-    <div class="flex justify-between items-center mb-6">
-     <h1 class="text-2xl font-bold">
-      Mengelola Pengumuman
-     </h1>
-     <button class="bg-blue-500 text-white p-2 rounded-lg shadow hover:bg-blue-600 transition duration-200" onclick="addAnnouncement()">
-      Tambah Pengumuman
-     </button>
+
+    <!-- Modal untuk Edit Pengumuman -->
+    <div id="editAnnouncementModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
+            <h2 class="text-xl font-bold mb-4">Edit Pengumuman</h2>
+            <form id="editAnnouncementForm" action="" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="mb-4">
+                    <label for="editTitle" class="block text-sm font-medium text-gray-700">Judul Pengumuman</label>
+                    <input type="text" name="title" id="editTitle" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                </div>
+                <div class="mb-4">
+                    <label for="editContent" class="block text-sm font-medium text-gray-700">Isi Pengumuman</label>
+                    <textarea name="content" id="editContent" rows="4" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"></textarea>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" class="bg-gray-300 text-gray-700 p-2 rounded-lg mr-2" onclick="closeEditModal()">Batal</button>
+                    <button type="submit" class="bg-blue-500 text-white p-2 rounded-lg">Simpan</button>
+                </div>
+            </form>
+        </div>
     </div>
-    <!-- Daftar Pengumuman Section -->
-    <div class="bg-white rounded shadow p-4 mb-6">
-     <div class="flex items-center mb-4">
-      <div class="bg-red-500 text-white p-2 rounded mr-2">
-       <i class="fas fa-bullhorn">
-       </i>
-      </div>
-      <h2 class="text-xl font-bold">
-       Daftar Pengumuman
-      </h2>
-     </div>
-     <div class="overflow-x-auto">
-      <table class="w-full text-left">
-       <thead>
-        <tr class="border-b">
-         <th class="p-2">
-          Pengumuman
-         </th>
-         <th class="p-2">
-          Aksi
-         </th>
-        </tr>
-       </thead>
-       <tbody>
-        <tr class="border-b">
-         <td class="p-2">
-          Ujian Tengah Semester akan dilaksanakan pada tanggal 15 Maret 2023.
-         </td>
-         <td class="p-2">
-          <button class="bg-green-500 text-white p-1 rounded-lg shadow hover:bg-green-600 transition duration-200 mr-2" onclick="editAnnouncement('1')">
-           Edit
-          </button>
-          <button class="bg-red-500 text-white p-1 rounded-lg shadow hover:bg-red-600 transition duration-200" onclick="deleteAnnouncement('1')">
-           Hapus
-          </button>
-         </td>
-        </tr>
-        <tr class="border-b">
-         <td class="p-2">
-          Libur sekolah dimulai dari tanggal 20 Desember 2023 hingga 5 Januari 2024.
-         </td>
-         <td class="p-2">
-          <button class="bg-green-500 text-white p-1 rounded-lg shadow hover:bg-green-600 transition duration-200 mr-2" onclick="editAnnouncement('2')">
-           Edit
-          </button>
-          <button class="bg-red-500 text-white p-1 rounded-lg shadow hover:bg-red-600 transition duration-200" onclick="deleteAnnouncement('2')">
-           Hapus
-          </button>
-         </td>
-        </tr>
-        <tr class="border-b">
-         <td class="p-2">
-          Pendaftaran lomba matematika nasional dibuka hingga 30 April 2023.
-         </td>
-         <td class="p-2">
-          <button class="bg-green-500 text-white p-1 rounded-lg shadow hover:bg-green-600 transition duration-200 mr-2" onclick="editAnnouncement('3')">
-           Edit
-          </button>
-          <button class="bg-red-500 text-white p-1 rounded-lg shadow hover:bg-red-600 transition duration-200" onclick="deleteAnnouncement('3')">
-           Hapus
-          </button>
-         </td>
-        </tr>
-        <!-- Tambahkan baris lainnya sesuai kebutuhan -->
-       </tbody>
-      </table>
-     </div>
-    </div>
-   </div>
-  </div>
- </body>
+</body>
 </html>

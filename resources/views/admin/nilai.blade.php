@@ -45,67 +45,54 @@
  </head>
  <body class="bg-gray-100">
   <div class="flex">
-   <!-- Sidebar -->
-   <div class="w-64 bg-gray-900 text-white min-h-screen fixed">
-    <div class="p-4 flex items-center">
-     <div class="text-2xl font-bold">
-      Sekolah
-     </div>
-     <div class="ml-2 text-sm">
-      Dashboard Admin
-     </div>
-    </div>
-    <div class="p-4 flex items-center">
-     <img alt="User profile picture" class="rounded-full w-10 h-10" height="40" src="https://placehold.co/40x40" width="40"/>
-     <div class="ml-2">
-      <div class="text-sm">
-       Nama Admin
-      </div>
-     </div>
-    </div>
-    <nav class="mt-4">
-        <ul>
-        <li class="p-2 hover:bg-gray-700 cursor-pointer">
-               <a href="{{ route('admin.index') }}" class="flex items-center">
-                   <i class="fas fa-list mr-2"></i>
-                   dashboard
-               </a>
-           </li>
-           <li class="p-2 hover:bg-gray-700 cursor-pointer">
-               <a href="{{ route('admin.pengguna') }}" class="flex items-center">
-                   <i class="fas fa-list mr-2"></i>
-                   data pengguna
-               </a>
-           </li>
-           <li class="p-2 hover:bg-gray-700 cursor-pointer">
-               <a href="{{ route('admin.kelas') }}" class="flex items-center">
-                   <i class="fas fa-list mr-2"></i>
-                   kelas dan mata pelajaran
-               </a>
-           </li>
-           <li class="p-2 hover:bg-gray-700 cursor-pointer">
-               <a href="{{ route('admin.nilai') }}" class="flex items-center">
-                   <i class="fas fa-list mr-2"></i>
-                   nilai siswa
-               </a>
-           </li>
-           <li class="p-2 hover:bg-gray-700 cursor-pointer">
-               <a href="{{ route('admin.pengumuman') }}" class="flex items-center">
-                   <i class="fas fa-list mr-2"></i>
-                   pengumuman
-               </a>
-           </li>
-         <form action="{{ route('logout') }}" method="POST">
-          @csrf
-          <button class="p-2 hover:bg-gray-700 cursor-pointer flex items-center w-full text-left" type="submit">
-           <i class="fas fa-sign-out-alt mr-2">
-           </i>
-           Logout
-          </button>
-         </form>
-        </ul>
-       </nav>
-   </div>
+ <!-- Sidebar -->
+ <div class="w-64 bg-gray-900 text-white min-h-screen fixed">
+            <div class="p-4 flex items-center">
+                <div class="text-2xl font-bold">Sekolah</div>
+            </div>
+            <div class="p-4 flex items-center bg-gray-800 rounded-lg mb-4">
+                <img src="{{ asset('img/gaga.jpg') }}" class="rounded-full w-14 h-14 border-2 border-white" alt="User  profile picture">
+                <div class="ml-3">
+                    <div class="text-lg font-semibold">{{ auth()->user()->name }}</div>
+                    <div class="text-sm">Admin</div>
+                </div>
+            </div>
+            <nav class="mt-4">
+                <ul>
+                    <li class="p-2 hover:bg-gray-700 cursor-pointer">
+                        <a href="{{ route('admin.index') }}" class="flex items-center">
+                            <i class="fas fa-list mr-2"></i> dashboard
+                        </a>
+                    </li>
+                    <li class="p-2 hover:bg-gray-700 cursor-pointer">
+                        <a href="{{ route('admin.pengguna') }}" class="flex items-center">
+                            <i class="fas fa-users mr-2"></i> data pengguna
+                        </a>
+                    </li>
+                    <li class="p-2 hover:bg-gray-700 cursor-pointer">
+                        <a href="{{ route('admin.kelas') }}" class="flex items-center">
+                            <i class="fas fa-chalkboard-teacher mr-2"></i> kelas dan mata pelajaran
+                        </a>
+                    </li>
+                    <li class="p-2 hover:bg-gray-700 cursor-pointer">
+                        <a href="{{ route('admin.nilai') }}" class="flex items-center">
+                            <i class="fas fa-graduation-cap mr-2"></i> nilai siswa
+                        </a>
+                    </li>
+                    <li class="p-2 hover:bg-gray-700 cursor-pointer">
+                        <a href="{{ route('admin.pengumuman') }}" class="flex items-center">
+                            <i class="fas fa-bullhorn mr-2"></i> pengumuman
+                        </a>
+                    </li>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button class="p-2 hover:bg-gray-700 cursor-pointer flex items-center w-full text-left" type="submit">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                        </button>
+                    </form>
+                </ul>
+            </nav>
+        </div>
    <!-- Main Content -->
    <div class="flex-1 p-6 ml-64">
     <div class="flex justify-between items-center mb-6">
