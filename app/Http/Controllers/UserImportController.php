@@ -17,7 +17,7 @@ class UserImportController extends Controller
 
     public function show()
     {
-        return view('admin.import'); // Tampilkan halaman import
+        return view('admin.pengguna'); // Tampilkan halaman import
     }
 
     public function import(Request $request)

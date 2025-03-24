@@ -4,6 +4,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Mengelola Pengumuman</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
@@ -98,9 +99,12 @@
         <div class="flex-1 p-6 ml-64">
             <div class="flex justify-between items-center mb-6">
                 <h1 class="text-2xl font-bold">Mengelola Pengumuman</h1>
-                <button class="bg-blue-500 text-white p-2 rounded-lg shadow hover:bg-blue-600 transition duration-200" onclick="addAnnouncement()">
-                    Tambah Pengumuman
+                <button class="bg-blue-500 text-white p-2 rounded-lg shadow hover:bg-blue-600 transition duration-200 flex items-center space-x-2" onclick="addAnnouncement()">
+                    <i class="fas fa-plus"></i>
+                    <span>Tambah Pengumuman</span>
                 </button>
+
+
             </div>
 
             <!-- Daftar Pengumuman Section -->
@@ -147,48 +151,74 @@
     </div>
 
     <!-- Modal untuk Tambah Pengumuman -->
-    <div id="createAnnouncementModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
-            <h2 class="text-xl font-bold mb-4">Tambah Pengumuman</h2>
-            <form action="{{ route('admin.pengumuman.store') }}" method="POST">
-                @csrf
-                <div class="mb-4">
-                    <label for="title" class="block text-sm font-medium text-gray-700">Judul Pengumuman</label>
-                    <input type="text" name="title" id="title" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                </div>
-                <div class="mb-4">
-                    <label for="content" class="block text-sm font-medium text-gray-700">Isi Pengumuman</label>
-                    <textarea name="content" id="content" rows="4" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"></textarea>
-                </div>
-                <div class="flex justify-end">
-                    <button type="button" class="bg-gray-300 text-gray-700 p-2 rounded-lg mr-2" onclick="closeModal()">Batal</button>
-                    <button type="submit" class="bg-blue-500 text-white p-2 rounded-lg">Simpan</button>
-                </div>
-            </form>
-        </div>
+<div id="createAnnouncementModal" class="fixed inset-0 flex items-center justify-center z-50 hidden bg-black bg-opacity-50">
+    <div class="bg-white border border-gray-300 rounded-lg shadow-lg p-6 w-full max-w-lg">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Tambah Pengumuman</h2>
+        <form action="{{ route('admin.pengumuman.store') }}" method="POST">
+            @csrf
+            <div class="mb-4">
+                <label for="title" class="block text-sm font-medium text-gray-700">Judul Pengumuman</label>
+                <input type="text" name="title" id="title" required 
+                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-200 focus:ring-opacity-50 p-2">
+            </div>
+            <div class="mb-4">
+                <label for="content" class="block text-sm font-medium text-gray-700">Isi Pengumuman</label>
+                <textarea name="content" id="content" rows="4" required 
+                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-200 focus:ring-opacity-50 p-2"></textarea>
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button type="button" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md border border-gray-400 hover:bg-gray-400 transition" onclick="closeModal()">Batal</button>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md border border-blue-700 hover:bg-blue-700 transition">Simpan</button>
+            </div>
+        </form>
     </div>
+</div>
+
+<script>
+    function openModal() {
+        document.getElementById('createAnnouncementModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('createAnnouncementModal').classList.add('hidden');
+    }
+</script>
+
 
     <!-- Modal untuk Edit Pengumuman -->
-    <div id="editAnnouncementModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg shadow-lg p-6 w-1/3">
-            <h2 class="text-xl font-bold mb-4">Edit Pengumuman</h2>
-            <form id="editAnnouncementForm" action="" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="mb-4">
-                    <label for="editTitle" class="block text-sm font-medium text-gray-700">Judul Pengumuman</label>
-                    <input type="text" name="title" id="editTitle" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                </div>
-                <div class="mb-4">
-                    <label for="editContent" class="block text-sm font-medium text-gray-700">Isi Pengumuman</label>
-                    <textarea name="content" id="editContent" rows="4" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"></textarea>
-                </div>
-                <div class="flex justify-end">
-                    <button type="button" class="bg-gray-300 text-gray-700 p-2 rounded-lg mr-2" onclick="closeEditModal()">Batal</button>
-                    <button type="submit" class="bg-blue-500 text-white p-2 rounded-lg">Simpan</button>
-                </div>
-            </form>
-        </div>
+<div id="editAnnouncementModal" class="fixed inset-0 flex items-center justify-center z-50 hidden bg-black bg-opacity-50">
+    <div class="bg-white border border-gray-300 rounded-lg shadow-lg p-6 w-full max-w-lg">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">Edit Pengumuman</h2>
+        <form id="editAnnouncementForm" action="" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="mb-4">
+                <label for="editTitle" class="block text-sm font-medium text-gray-700">Judul Pengumuman</label>
+                <input type="text" name="title" id="editTitle" required 
+                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-200 focus:ring-opacity-50 p-2">
+            </div>
+            <div class="mb-4">
+                <label for="editContent" class="block text-sm font-medium text-gray-700">Isi Pengumuman</label>
+                <textarea name="content" id="editContent" rows="4" required 
+                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-200 focus:ring-opacity-50 p-2"></textarea>
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button type="button" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md border border-gray-400 hover:bg-gray-400 transition" onclick="closeEditModal()">Batal</button>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md border border-blue-700 hover:bg-blue-700 transition">Simpan</button>
+            </div>
+        </form>
     </div>
+</div>
+
+<script>
+    function openEditModal() {
+        document.getElementById('editAnnouncementModal').classList.remove('hidden');
+    }
+
+    function closeEditModal() {
+        document.getElementById('editAnnouncementModal').classList.add('hidden');
+    }
+</script>
+
 </body>
 </html>

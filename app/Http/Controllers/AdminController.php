@@ -4,13 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pengumuman; 
+use App\Models\User; 
 
 class AdminController extends Controller
 {   
      // sesi dashboard
     public function index(){
         $pengumuman = Pengumuman::all(); // Ambil semua data pengumuman
-    return view('admin.index', compact('pengumuman')); // Ganti 'admin.dashboard' dengan nama view Anda
+        $jumlahSiswa = User::where('role', 'siswa')->count();
+        $jumlahGuru = User::where('role', 'guru')->count();
+    
+    return view('admin.index', compact('pengumuman','jumlahSiswa','jumlahGuru')); // Ganti 'admin.dashboard' dengan nama view Anda
     }
      // sesi kelas
     public function kelas(){

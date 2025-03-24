@@ -85,8 +85,8 @@
                         <i class="fas fa-users"></i>
                     </div>
                     <div>
-                        <div class="text-xl font-bold">200</div>
-                        <div class="text-gray-500">Jumlah Murid</div>
+                        <div class="text-xl font-bold">{{ $jumlahSiswa }}</div>
+                        <div class="text-gray-500">Jumlah Siswa</div>
                     </div>
                 </div>
                 <div class="bg-white rounded shadow p-4 flex items-center">
@@ -94,7 +94,7 @@
                         <i class="fas fa-chalkboard-teacher"></i>
                     </div>
                     <div>
-                        <div class="text-xl font-bold">20</div>
+                        <div class="text-xl font-bold">{{ $jumlahGuru }}</div>
                         <div class="text-gray-500">Jumlah Guru</div>
                     </div>
                 </div>

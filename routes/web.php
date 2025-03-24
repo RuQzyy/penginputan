@@ -49,11 +49,37 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/admin/pengumuman/{id}', [AdminController::class, 'update'])->name('admin.pengumuman.update');
         Route::get('/admin/pengumuman/{id}', [AdminController::class, 'show'])->name('admin.pengumuman.show');
         
-        Route::get('/admin/pengguna', [AdminController::class, 'pengguna'])->name('admin.pengguna');
-        Route::get('/admin/import', [UserImportController::class, 'show'])->name('admin.import');
-        Route::post('/admin/import', [UserImportController::class, 'import'])->name('admin.import.process');  
-        Route::get('/admin/pengguna', [UserController::class, 'index'])->name('admin.pengguna'); 
-        Route::get('/admin/pengguna', [UserController::class, 'index'])->name('admin.pengguna'); 
+         // pengguna
+        // Route::get('/admin/pengguna', [UserImportController::class, 'show'])->name('admin.pengguna');
+        // Route::post('/admin/pengguna', [UserImportController::class, 'import'])->name('admin.pengguna.process'); 
+        // Route::post('/admin/pengguna', [UserImportController::class, 'import'])->name('admin.pengguna.import');  
+        // Route::get('/admin/pengguna', [UserController::class, 'index'])->name('admin.pengguna'); 
+        // Route::post('/admin/pengguna/store', [UserController::class, 'store'])->name('admin.pengguna.store');
+        // Route::get('/admin/pengguna/{id}', [UserController::class, 'edit'])->name('admin.pengguna.edit');
+        // Route::put('/admin/pengguna/{id}', [UserController::class, 'update'])->name('admin.pengguna.update');
+        // Route::delete('/admin/pengguna/{id}', [UserController::class, 'destroy'])->name('admin.pengguna.delete'); 
+        // Route::get('/admin/pengguna', [AdminController::class, 'pengguna'])->name('admin.pengguna');
+        // Route::get('/admin/pengguna', [UserController::class, 'index'])->name('admin.pengguna');
+        // Route::post('/admin/pengguna', [UserController::class, 'updateRole'])->name('admin.pengguna.updateRole');
+        // Rute untuk menampilkan daftar pengguna
+        Route::get('/admin/pengguna', [UserController::class, 'index'])->name('admin.pengguna');
+
+        // Rute untuk menambah pengguna
+        Route::post('/admin/pengguna/store', [UserController::class, 'store'])->name('admin.pengguna.store');
+
+        // Rute untuk mengedit dan mengupdate pengguna
+        Route::get('/admin/pengguna/{id}', [UserController::class, 'edit'])->name('admin.pengguna.edit');
+        Route::put('/admin/pengguna/{id}', [UserController::class, 'update'])->name('admin.pengguna.update');
+
+        // Rute untuk menghapus pengguna
+        Route::delete('/admin/pengguna/{id}', [UserController::class, 'destroy'])->name('admin.pengguna.delete');
+
+        // Rute untuk mengubah peran pengguna
+        Route::post('/admin/pengguna/update-role', [UserController::class, 'updateRole'])->name('admin.pengguna.updateRole');
+
+        // Rute untuk impor dan ekspor pengguna
+        Route::post('/admin/pengguna/import', [UserImportController::class, 'import'])->name('admin.pengguna.import');
+        Route::get('/admin/pengguna/export', [UserImportController::class, 'export'])->name('admin.pengguna.export');
         Route::post('/admin/users', [UserController::class, 'store'])->name('admin.user.store');
     });
 
