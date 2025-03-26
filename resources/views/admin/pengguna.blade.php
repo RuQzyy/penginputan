@@ -6,7 +6,6 @@
     <title>Mengelola Data Pengguna</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
     <style>
@@ -25,11 +24,14 @@ function closeAddUserModal() {
 
 
 
-function editUser(userId) {
+function editUser(userId, userName, userEmail) {
     document.getElementById('editUserId').value = userId;
-    document.getElementById('editUserForm').action = '/admin/pengguna/{id}'; // Sesuai dengan rute baru
+    document.getElementById('editName').value = userName;
+    document.getElementById('editEmail').value = userEmail;
+    document.getElementById('editUserForm').action = `/admin/pengguna/${userId}`;
     document.getElementById('editUserModal').classList.remove('hidden');
 }
+
 
 function closeEditUserModal() {
     document.getElementById('editUserModal').classList.add('hidden');
@@ -143,9 +145,11 @@ function closeAssignRoleModal() {
                         <td class="border px-4 py-2">{{ $user->email }}</td>
                         <td class="border px-4 py-2">{{ $user->role }}</td>
                         <td class="border px-4 py-2">
-                            <button onclick="editUser({{ $user->id }})" class="bg-yellow-500 text-white p-1 rounded flex items-center gap-1">
+                        <button onclick="editUser({{ $user->id }}, '{{ $user->name }}', '{{ $user->email }}')"
+                                class="bg-yellow-500 text-white p-1 rounded flex items-center gap-1">
                                 <i class="fas fa-edit"></i> Edit
                             </button>
+
                             <button onclick="assignRole({{ $user->id }})" class="bg-blue-500 text-white p-1 rounded flex items-center gap-1">
                                 <i class="fas fa-user-cog"></i> Ubah Role
                             </button>
@@ -165,40 +169,49 @@ function closeAssignRoleModal() {
         </div>
     </div>
 
-    <!-- Modal Tambah Pengguna -->
-    <div id="addUserModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <div class="bg-white rounded p-6 w-1/3">
-            <h2 class="text-xl font-bold mb-4">Tambah Pengguna</h2>
-            <form action="{{ route('admin.pengguna.store') }}" method="POST">
-    @csrf
-    <div class="mb-4">
-        <label for="name" class="block text-sm font-medium">Nama</label>
-        <input type="text" name="name" required class="border rounded w-full p-2">
-    </div>
-    <div class="mb-4">
-        <label for="email" class="block text-sm font-medium">Email</label>
-        <input type="email" name="email" required class="border rounded w-full p-2">
-    </div>
-    <div class="mb-4">
-        <label for="password" class="block text-sm font-medium">Password</label>
-        <input type="password" name="password" required class="border rounded w-full p-2">
-    </div>
-    <div class="mb-4">
-    <label for="editRole" class="block text-sm font-medium">Peran</label>
-    <select name="role" id="editRole" required class="border rounded w-full p-2">
-        <option value="admin">Admin</option>
-        <option value="guru">Guru</option>
-        <option value="siswa">Siswa</option>
-    </select>
-</div>
-    <div class="flex justify-end">
-        <button type="button" class="bg-gray-300 text-black p-2 rounded mr-2" onclick="closeAddUserModal()">Batal</button>
-        <button type="submit" class="bg-blue-500 text-white p-2 rounded">Simpan</button>
-    </div>
-</form>
-
+   <!-- Modal Tambah Pengguna -->
+<div id="addUserModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden" onclick="closeAddUserModalOutside(event)">
+    <div class="bg-white rounded p-6 w-1/3">
+        <h2 class="text-xl font-bold mb-4">Tambah Pengguna</h2>
+        <form action="{{ route('admin.pengguna.store') }}" method="POST">
+        @csrf
+        <div class="mb-4">
+            <label for="name" class="block text-sm font-medium">Nama</label>
+            <input type="text" name="name" required class="border rounded w-full p-2">
         </div>
+        <div class="mb-4">
+            <label for="email" class="block text-sm font-medium">Email</label>
+            <input type="email" name="email" required class="border rounded w-full p-2">
+        </div>
+        <div class="mb-4">
+            <label for="password" class="block text-sm font-medium">Password</label>
+            <input type="password" name="password" required class="border rounded w-full p-2">
+        </div>
+        <div class="mb-4">
+            <label for="role" class="block text-sm font-medium">Peran</label>
+            <select name="role" required class="border rounded w-full p-2">
+                <option value="admin">Admin</option>
+                <option value="guru">Guru</option>
+                <option value="siswa">Siswa</option>
+            </select>
+        </div>
+        <div class="flex justify-end">
+            <button type="button" class="bg-gray-300 text-black p-2 rounded mr-2" onclick="closeAddUserModal()">Batal</button>
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded">Simpan</button>
+        </div>
+    </form>
+
     </div>
+</div>
+
+<script>
+    function closeAddUserModalOutside(event) {
+        if (event.target.id === "addUserModal") {
+            closeAddUserModal();
+        }
+    }
+</script>
+
 
    <!-- Modal Edit Pengguna -->
 <div id="editUserModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden transition-opacity duration-300">
@@ -206,7 +219,7 @@ function closeAssignRoleModal() {
         <h2 class="text-xl font-bold mb-4">Edit Pengguna</h2>
         <form id="editUserForm" method="POST">
             @csrf
-            <input type="hidden" name="_method" value="PUT">
+            @method('PUT')
             <input type="hidden" id="editUserId" name="user_id">
 
             <!-- Input Nama -->

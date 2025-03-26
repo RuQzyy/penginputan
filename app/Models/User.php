@@ -33,6 +33,16 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function mataPelajaran()
+    {
+        return $this->hasMany(MataPelajaran::class, 'guru_id');
+    }
+
+    public static function getGuru()
+    {
+        return self::where('role', 'guru')->get();
+    }
+
     /**
      * Get the attributes that should be cast.
      *

@@ -7,9 +7,12 @@ use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserImportController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\KelasController;
+use App\Http\Controllers\MataPelajaranController;
+
 
 Route::get('/', function () {
-    return view('auth.login'); // Tambahkan route untuk halaman utama
+    return auth()->check() ? redirect()->route('dashboard') : view('auth.login');
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -36,54 +39,52 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/guru/input', [GuruController::class, 'input'])->name('guru.input');
         Route::get('/guru/nilai', [GuruController::class, 'nilai'])->name('guru.nilai');
     });
-     // Routes untuk admin
+
+    // Routes untuk admin
     Route::middleware('admin')->group(function () {
         Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
         Route::get('/admin/kelas', [AdminController::class, 'kelas'])->name('admin.kelas');
         Route::get('/admin/nilai', [AdminController::class, 'nilai'])->name('admin.nilai');
 
-         // pengumuman
-        Route::get('/admin/pengumuman', [AdminController::class, 'pengumuman'])->name('admin.pengumuman');
-        Route::post('/admin/pengumuman', [AdminController::class, 'store'])->name('admin.pengumuman.store');
-        Route::delete('/admin/pengumuman/{id}', [AdminController::class, 'destroy'])->name('admin.pengumuman.destroy');
-        Route::put('/admin/pengumuman/{id}', [AdminController::class, 'update'])->name('admin.pengumuman.update');
-        Route::get('/admin/pengumuman/{id}', [AdminController::class, 'show'])->name('admin.pengumuman.show');
+        // Pengumuman
+        Route::prefix('/admin/pengumuman')->group(function () {
+            Route::get('/', [AdminController::class, 'pengumuman'])->name('admin.pengumuman');
+            Route::post('/', [AdminController::class, 'store'])->name('admin.pengumuman.store');
+            Route::delete('/{id}', [AdminController::class, 'destroy'])->name('admin.pengumuman.destroy');
+            Route::put('/{id}', [AdminController::class, 'update'])->name('admin.pengumuman.update');
+            Route::get('/{id}', [AdminController::class, 'show'])->name('admin.pengumuman.show');
+        });
+
+        // Pengguna
+        Route::prefix('/admin/pengguna')->group(function () {
+            Route::get('/', [UserController::class, 'index'])->name('admin.pengguna');
+            Route::post('/', [UserController::class, 'store'])->name('admin.pengguna.store');
+            Route::get('/{id}/edit', [UserController::class, 'edit'])->name('admin.pengguna.edit');
+            Route::put('/{id}', [UserController::class, 'update'])->name('admin.pengguna.update');
+            Route::delete('/{id}', [UserController::class, 'destroy'])->name('admin.pengguna.delete');
+            Route::post('/update-role', [UserController::class, 'updateRole'])->name('admin.pengguna.updateRole');
+            Route::post('/import', [UserImportController::class, 'import'])->name('admin.pengguna.import');
+            Route::get('/export', [UserImportController::class, 'export'])->name('admin.pengguna.export');
+        });
+
+       // Route untuk kelas
+        Route::prefix('/admin/kelas')->group(function () {
+            Route::get('/', [KelasController::class, 'index'])->name('admin.kelas');
+            Route::post('/store', [KelasController::class, 'store'])->name('admin.kelas.store');
+            Route::post('/{kelasId}/addSubject', [KelasController::class, 'addSubject'])->name('admin.kelas.addSubject');
+            Route::delete('/{id}', [KelasController::class, 'destroy'])->name('admin.kelas.destroy');
+            Route::put('/{id}', [KelasController::class, 'update'])->name('admin.kelas.update');
+
+            Route::prefix('/{id}/mata-pelajaran')->group(function () {
+                Route::get('/', [MataPelajaranController::class, 'index'])->name('admin.kelas.mataPelajaran');
+                Route::post('/store', [MataPelajaranController::class, 'store'])->name('admin.kelas.mataPelajaran.store');
+                Route::delete('/{idMapel}', [MataPelajaranController::class, 'destroy'])->name('admin.kelas.mataPelajaran.destroy');
+            });
+        });
+
+        //matapelajaran
         
-         // pengguna
-        // Route::get('/admin/pengguna', [UserImportController::class, 'show'])->name('admin.pengguna');
-        // Route::post('/admin/pengguna', [UserImportController::class, 'import'])->name('admin.pengguna.process'); 
-        // Route::post('/admin/pengguna', [UserImportController::class, 'import'])->name('admin.pengguna.import');  
-        // Route::get('/admin/pengguna', [UserController::class, 'index'])->name('admin.pengguna'); 
-        // Route::post('/admin/pengguna/store', [UserController::class, 'store'])->name('admin.pengguna.store');
-        // Route::get('/admin/pengguna/{id}', [UserController::class, 'edit'])->name('admin.pengguna.edit');
-        // Route::put('/admin/pengguna/{id}', [UserController::class, 'update'])->name('admin.pengguna.update');
-        // Route::delete('/admin/pengguna/{id}', [UserController::class, 'destroy'])->name('admin.pengguna.delete'); 
-        // Route::get('/admin/pengguna', [AdminController::class, 'pengguna'])->name('admin.pengguna');
-        // Route::get('/admin/pengguna', [UserController::class, 'index'])->name('admin.pengguna');
-        // Route::post('/admin/pengguna', [UserController::class, 'updateRole'])->name('admin.pengguna.updateRole');
-        // Rute untuk menampilkan daftar pengguna
-        Route::get('/admin/pengguna', [UserController::class, 'index'])->name('admin.pengguna');
-
-        // Rute untuk menambah pengguna
-        Route::post('/admin/pengguna/store', [UserController::class, 'store'])->name('admin.pengguna.store');
-
-        // Rute untuk mengedit dan mengupdate pengguna
-        Route::get('/admin/pengguna/{id}', [UserController::class, 'edit'])->name('admin.pengguna.edit');
-        Route::put('/admin/pengguna/{id}', [UserController::class, 'update'])->name('admin.pengguna.update');
-
-        // Rute untuk menghapus pengguna
-        Route::delete('/admin/pengguna/{id}', [UserController::class, 'destroy'])->name('admin.pengguna.delete');
-
-        // Rute untuk mengubah peran pengguna
-        Route::post('/admin/pengguna/update-role', [UserController::class, 'updateRole'])->name('admin.pengguna.updateRole');
-
-        // Rute untuk impor dan ekspor pengguna
-        Route::post('/admin/pengguna/import', [UserImportController::class, 'import'])->name('admin.pengguna.import');
-        Route::get('/admin/pengguna/export', [UserImportController::class, 'export'])->name('admin.pengguna.export');
-        Route::post('/admin/users', [UserController::class, 'store'])->name('admin.user.store');
     });
-
-    
 });
 
 require __DIR__.'/auth.php';
